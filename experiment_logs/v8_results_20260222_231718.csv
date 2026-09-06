@@ -1,0 +1,2 @@
+version,timestamp,features,Total Alkalinity_best_config,Total Alkalinity_best_r2,Electrical Conductance_best_config,Electrical Conductance_best_r2,Dissolved Reactive Phosphorus_best_config,Dissolved Reactive Phosphorus_best_r2
+V8,20260222_231718,271,XGB_t2_balanced,-0.39589849390257625,XGB_t3_focused,-0.22853750845214074,XGB_t2_balanced,-0.5904779567852225

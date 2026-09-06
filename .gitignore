@@ -1,0 +1,24 @@
+# Python / venv
+venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Local tooling / OS
+.claude/
+.vscode/
+*.log
+.DS_Store
+Thumbs.db
+
+# Large generated data — kept locally as restart point, NOT pushed
+# (GitHub blocks single files >100MB; total data/ is ~125MB)
+data/extracted/*.csv
+!data/extracted/*_feature_columns.txt
+
+# EY vendor CSVs are large — keep notebooks/code, ignore raw CSVs
+ey_challenge_notebooks/*.csv
+!ey_challenge_notebooks/submission_template.csv
