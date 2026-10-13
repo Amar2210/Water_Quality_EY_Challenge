@@ -43,7 +43,7 @@ import pandas as pd
 import os
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATA_DIR = os.path.join(BASE_DIR, '..', 'Jupyter Notebook Package')
+DATA_DIR = os.path.join(BASE_DIR, '..', 'ey_challenge_notebooks')
 EXTRACTED_DIR = os.path.join(BASE_DIR, '..', 'data', 'extracted')
 TARGETS = ['Total Alkalinity', 'Electrical Conductance', 'Dissolved Reactive Phosphorus']
 
@@ -131,19 +131,7 @@ def round_coords(df, decimals=6):
     return df
 
 
-# Round all
-for name, df_obj in [('wq_train', wq_train), ('submission', submission_template),
-                      ('ls_train', ls_train), ('ls_val', ls_val),
-                      ('ey_train', ey_landsat_train), ('ey_val', ey_landsat_val),
-                      ('terra_train', terra_train), ('terra_val', terra_val),
-                      ('elevation', elevation), ('soil', soil),
-                      ('landcover', landcover), ('geology', geology)]:
-    globals()[name if name not in ('submission', 'ey_train', 'ey_val')
-              else {'submission': 'submission_template',
-                    'ey_train': 'ey_landsat_train',
-                    'ey_val': 'ey_landsat_val'}[name]] = round_coords(df_obj)
-
-# Simpler approach: just round them all directly
+# Round each source once before merging.
 wq_train = round_coords(wq_train)
 submission_template = round_coords(submission_template)
 ls_train = round_coords(ls_train)
@@ -167,7 +155,7 @@ def build_merged(base_df, ls_df, ey_ls_df, terra_df, name=''):
 
     # Full Landsat
     ls_feature_cols = [c for c in ls_df.columns if c.startswith('ls_')]
-    ls_merge = ls_df[join_keys + ls_feature_cols + (['ls_platform'] if 'ls_platform' in ls_df.columns else [])].copy()
+    ls_merge = ls_df[join_keys + ls_feature_cols].copy()
     df = df.merge(ls_merge, on=join_keys, how='left')
     print(f"    [{name}] + Full Landsat:  {df.shape[1]} cols")
 
@@ -759,6 +747,6 @@ NEW in V8 over V6:
     - Anthropogenic pressure index
     - Natural buffering capacity
 
-Next: Run the V8 model script
+Next: Run python scripts/20_feature_engineering_v9.py
 {'='*70}
 """)

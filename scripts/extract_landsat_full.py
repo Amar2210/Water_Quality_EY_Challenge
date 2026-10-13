@@ -94,8 +94,8 @@ from tqdm import tqdm
 # =========================================================================
 # CONFIGURATION
 # =========================================================================
-BASE_DIR   = Path(__file__).parent.parent
-DATA_DIR   = BASE_DIR / "Jupyter Notebook Package"
+BASE_DIR   = Path(__file__).resolve().parent.parent
+DATA_DIR   = BASE_DIR / "ey_challenge_notebooks"
 OUT_DIR    = BASE_DIR / "data" / "extracted"
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 

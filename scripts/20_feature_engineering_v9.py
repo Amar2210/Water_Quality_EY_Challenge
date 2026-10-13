@@ -32,15 +32,16 @@ NEW IN V9:
   
   5. All V8 features (land cover, geology, climate, Landsat, etc.)
 
-WHY THIS SHOULD WORK:
-  The top teams score 0.82. That's impossible from just 
-  environmental features — water quality has too much unexplained
-  variance. They MUST be using spatial proximity to training data.
-  
-  If test location A is 3km from training location B where 
-  EC=500 and alkalinity=200, then EC≈500 and alkalinity≈200
-  at location A is already a strong baseline. The environmental
-  features then explain the residual variation.
+HYPOTHESIS:
+  Nearby training stations may provide a useful starting point;
+  environmental features may explain deviations from that baseline.
+  The supplied prediction locations are actually 82-282 km away.
+
+EVALUATION WARNING:
+  These historical features use targets from the full training set.
+  Excluding the query station is NOT the same as excluding a held-out
+  spatial fold. Rebuild neighbor features inside each fold before
+  claiming leakage-free spatial cross-validation. See docs/REVIEW.md.
 
 OUTPUT:
   data/extracted/v9_train_features.csv
@@ -58,7 +59,7 @@ import os
 from scipy.spatial import cKDTree
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATA_DIR = os.path.join(BASE_DIR, '..', 'Jupyter Notebook Package')
+DATA_DIR = os.path.join(BASE_DIR, '..', 'ey_challenge_notebooks')
 EXTRACTED_DIR = os.path.join(BASE_DIR, '..', 'data', 'extracted')
 TARGETS = ['Total Alkalinity', 'Electrical Conductance', 'Dissolved Reactive Phosphorus']
 eps = 1e-8

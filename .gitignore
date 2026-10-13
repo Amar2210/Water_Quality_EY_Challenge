@@ -19,6 +19,11 @@ Thumbs.db
 data/extracted/*.csv
 !data/extracted/*_feature_columns.txt
 
-# EY vendor CSVs are large — keep notebooks/code, ignore raw CSVs
+# EY-provided data is kept locally; retain notebooks and the prediction template
 ey_challenge_notebooks/*.csv
 !ey_challenge_notebooks/submission_template.csv
+
+# V9's tracked reference lives only in best_submission/; reruns stay local
+submissions/submission_v9.csv
+# Historical scripts may emit timestamped copies; don't track duplicates
+submissions/*_20??????_??????.csv

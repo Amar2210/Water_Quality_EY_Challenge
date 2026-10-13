@@ -39,8 +39,8 @@ import numpy as np
 import pandas as pd
 import os
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATA_DIR = os.path.join(BASE_DIR, '..', 'Jupyter Notebook Package')
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DATA_DIR = os.path.join(BASE_DIR, '..', 'ey_challenge_notebooks')
 EXTRACTED_DIR = os.path.join(BASE_DIR, '..', 'data', 'extracted')
 
 print("=" * 70)

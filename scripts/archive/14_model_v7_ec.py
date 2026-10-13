@@ -44,9 +44,8 @@ np.random.seed(42)
 # ============================================================
 # PATHS
 # ============================================================
-BASE_DIR = r"C:\Users\amarbir\Self_Learning\EY_Challenge"
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 DATA_DIR = os.path.join(BASE_DIR, "data", "extracted")
-RAW_DIR = os.path.join(BASE_DIR, "data", "raw")
 SUBMISSION_DIR = os.path.join(BASE_DIR, "submissions")
 LOG_DIR = os.path.join(BASE_DIR, "experiment_logs")
 
@@ -612,7 +611,7 @@ print(f"  Training EC:    mean={train_df[TARGET].mean():.1f}, "
       f"median={train_df[TARGET].median():.1f}")
 
 # Load submission template
-template_path = os.path.join(BASE_DIR, "Jupyter Notebook Package", "submission_template.csv")
+template_path = os.path.join(BASE_DIR, "ey_challenge_notebooks", "submission_template.csv")
 submission = pd.read_csv(template_path)
 submission['Electrical Conductance'] = val_preds
 

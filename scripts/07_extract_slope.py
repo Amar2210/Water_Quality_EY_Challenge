@@ -45,7 +45,7 @@ from tqdm import tqdm
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATA_DIR = os.path.join(BASE_DIR, '..', 'Jupyter Notebook Package')
+DATA_DIR = os.path.join(BASE_DIR, '..', 'ey_challenge_notebooks')
 EXTRACTED_DIR = os.path.join(BASE_DIR, '..', 'data', 'extracted')
 os.makedirs(EXTRACTED_DIR, exist_ok=True)
 
@@ -327,4 +327,4 @@ if __name__ == "__main__":
         print(f"    Moderate (1-5°): {moderate} locations")
         print(f"    Steep (>5°): {steep} locations")
     
-    print(f"\n  NEXT: Run 08_feature_engineering_v4.py to merge all features")
+    print(f"\n  NEXT: Run scripts/18_feature_engineering_v8.py once all sources are available")

@@ -55,8 +55,8 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 warnings.filterwarnings("ignore")
 
 # --- PATHS ---------------------------------------------------------------
-BASE_DIR   = Path(__file__).parent.parent          # project root
-DATA_DIR   = BASE_DIR / "Jupyter Notebook Package"
+BASE_DIR   = Path(__file__).resolve().parents[2]   # project root
+DATA_DIR   = BASE_DIR / "ey_challenge_notebooks"
 OUT_DIR    = BASE_DIR / "data" / "extracted"
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 

@@ -45,7 +45,7 @@ from tqdm import tqdm
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATA_DIR = os.path.join(BASE_DIR, '..', 'Jupyter Notebook Package')
+DATA_DIR = os.path.join(BASE_DIR, '..', 'ey_challenge_notebooks')
 OUTPUT_DIR = os.path.join(BASE_DIR, '..', 'data', 'extracted')
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
@@ -423,4 +423,4 @@ Source: Macrostrat API + Soil-derived proxies
     print(f"{'='*70}")
     print(f"  Locations: {len(geo_df)}")
     print(f"  Macrostrat coverage: {(geo_df['geo_source'] == 'macrostrat').sum()}/{len(geo_df)}")
-    print(f"\n  Next: Run the V7b model script to combine these with existing features")
+    print(f"\n  Next: Check lithology coverage, then run scripts/18_feature_engineering_v8.py")

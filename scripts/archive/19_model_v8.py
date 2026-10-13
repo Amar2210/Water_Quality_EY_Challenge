@@ -49,9 +49,9 @@ np.random.seed(42)
 # ============================================================
 # PATHS
 # ============================================================
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 EXTRACTED_DIR = os.path.join(BASE_DIR, '..', 'data', 'extracted')
-DATA_DIR = os.path.join(BASE_DIR, '..', 'Jupyter Notebook Package')
+DATA_DIR = os.path.join(BASE_DIR, '..', 'ey_challenge_notebooks')
 SUBMISSION_DIR = os.path.join(BASE_DIR, '..', 'submissions')
 LOG_DIR = os.path.join(BASE_DIR, '..', 'experiment_logs')
 os.makedirs(SUBMISSION_DIR, exist_ok=True)

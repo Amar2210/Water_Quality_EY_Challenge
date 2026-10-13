@@ -47,7 +47,7 @@ np.random.seed(42)
 # ============================================================
 # PATHS
 # ============================================================
-BASE_DIR = r"C:\Users\amarbir\Self_Learning\EY_Challenge"
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 DATA_DIR = os.path.join(BASE_DIR, "data", "extracted")
 SUBMISSION_DIR = os.path.join(BASE_DIR, "submissions")
 LOG_DIR = os.path.join(BASE_DIR, "experiment_logs")
@@ -540,7 +540,7 @@ print(f"\n{'='*70}")
 print(f"[10] GENERATING SUBMISSIONS")
 print(f"{'='*70}")
 
-template_path = os.path.join(BASE_DIR, "Jupyter Notebook Package", "submission_template.csv")
+template_path = os.path.join(BASE_DIR, "ey_challenge_notebooks", "submission_template.csv")
 submission = pd.read_csv(template_path)
 
 # Best model predictions

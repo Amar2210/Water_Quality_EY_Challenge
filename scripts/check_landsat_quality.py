@@ -1,8 +1,9 @@
 """Quick quality check on the full Landsat extraction."""
 import pandas as pd
-import numpy as np
+from pathlib import Path
 
-DATA = r"C:\Users\amarbir\self_learning\ey_challenge\data\extracted"
+ROOT = Path(__file__).resolve().parent.parent
+DATA = ROOT / 'data' / 'extracted'
 
 for split, fname in [("TRAINING", "landsat_full_training.csv"), ("VALIDATION", "landsat_full_validation.csv")]:
     df = pd.read_csv(f"{DATA}/{fname}")
@@ -43,7 +44,7 @@ for split, fname in [("TRAINING", "landsat_full_training.csv"), ("VALIDATION", "
 print(f"\n\n{'='*60}")
 print(f"  COMPARISON: Our extraction vs EY's original")
 print(f"{'='*60}")
-ey_train = pd.read_csv(r"C:\Users\amarbir\self_learning\ey_challenge\Jupyter Notebook Package\landsat_features_training.csv")
+ey_train = pd.read_csv(ROOT / 'ey_challenge_notebooks' / 'landsat_features_training.csv')
 our_train = pd.read_csv(f"{DATA}/landsat_full_training.csv")
 
 ey_nan = ey_train["nir"].isna().mean() * 100

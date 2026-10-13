@@ -23,8 +23,8 @@ import time
 
 warnings.filterwarnings('ignore')
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATA_DIR = os.path.join(BASE_DIR, '..', 'Jupyter Notebook Package')
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DATA_DIR = os.path.join(BASE_DIR, '..', 'ey_challenge_notebooks')
 SUBMISSION_DIR = os.path.join(BASE_DIR, '..', 'submissions')
 os.makedirs(SUBMISSION_DIR, exist_ok=True)
 

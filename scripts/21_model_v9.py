@@ -23,6 +23,12 @@ Also includes:
   - Target-specific feature tiers
   - Spatial GroupKFold CV
   - Ensemble of multiple approaches
+
+HISTORICAL REPRODUCTION ONLY:
+  KNN target features were computed before splitting into folds.
+  The printed CV scores are not leakage-free spatial validation.
+  This script does not automatically replace the saved best submission.
+  See docs/REVIEW.md before interpreting the results.
 ============================================================
 """
 
@@ -34,8 +40,6 @@ import pandas as pd
 from datetime import datetime
 from sklearn.model_selection import GroupKFold
 from sklearn.cluster import KMeans
-from sklearn.preprocessing import StandardScaler
-from sklearn.linear_model import Ridge, ElasticNet
 from sklearn.metrics import r2_score
 from sklearn.impute import SimpleImputer
 import xgboost as xgb
@@ -51,7 +55,7 @@ np.random.seed(42)
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 EXTRACTED_DIR = os.path.join(BASE_DIR, '..', 'data', 'extracted')
-DATA_DIR = os.path.join(BASE_DIR, '..', 'Jupyter Notebook Package')
+DATA_DIR = os.path.join(BASE_DIR, '..', 'ey_challenge_notebooks')
 SUBMISSION_DIR = os.path.join(BASE_DIR, '..', 'submissions')
 LOG_DIR = os.path.join(BASE_DIR, '..', 'experiment_logs')
 os.makedirs(SUBMISSION_DIR, exist_ok=True)
@@ -98,7 +102,9 @@ print(f"  Features: {len(all_feature_cols)}")
 # ============================================================
 # [2] SPATIAL CV SETUP
 # ============================================================
-print("\n[2] Setting up spatial CV...")
+print("\n[2] Setting up historical spatial CV...")
+print("  WARNING: Precomputed KNN features use full-training targets.")
+print("  These scores are NOT leakage-free spatial CV; see docs/REVIEW.md.")
 
 coords = train_df[['Latitude', 'Longitude']].values
 kmeans = KMeans(n_clusters=N_CLUSTERS, random_state=RANDOM_STATE, n_init=10)
@@ -388,13 +394,6 @@ for target in TARGETS:
     print(f"    Approach A (pure ML):            R² = {r2_a:+.4f}")
     print(f"    Approach B (KNN + residual):     R² = {r2_b:+.4f}")
     
-    # Blend A and B based on relative performance
-    w_a = max(r2_a, 0.001)
-    w_b = max(r2_b, 0.001)
-    total = w_a + w_b
-    w_a /= total
-    w_b /= total
-    
     # If one approach is much better, lean heavily toward it
     if r2_b > r2_a + 0.05:
         # B is clearly better
@@ -433,12 +432,10 @@ for target in TARGETS:
     submission[target] = final_predictions[target]
 
 sub_path = os.path.join(SUBMISSION_DIR, 'submission_v9.csv')
-sub_ts_path = os.path.join(SUBMISSION_DIR, f'submission_v9_{ts}.csv')
 submission.to_csv(sub_path, index=False)
-submission.to_csv(sub_ts_path, index=False)
 
 print(f"  Saved: {sub_path}")
-print(f"  Saved: {sub_ts_path}")
+print("  Saved best_submission/submission_v9.csv is unchanged.")
 
 # NaN check
 for target in TARGETS:
@@ -478,7 +475,10 @@ Submit {sub_path} and compare with V8!
 """)
 
 # Save log
-log_data = {'version': 'V9', 'timestamp': ts}
+log_data = {
+    'version': 'V9', 'timestamp': ts,
+    'evaluation_status': 'precomputed_full_training_neighbor_features',
+}
 for target in TARGETS:
     log_data[f'{target}_approach_a_r2'] = approach_a_results[target]['r2']
     log_data[f'{target}_approach_b_r2'] = approach_b_results[target].get('r2', np.nan)

@@ -1,55 +1,101 @@
 # EY Water Quality Challenge 2026
 
-Predict 3 water quality parameters (Total Alkalinity, Electrical Conductance, Dissolved Reactive Phosphorus) for South African river locations. Core difficulty: validation locations are in a different geographic region than training — spatial generalization. See `experiment_logs/experiment_log.md` for full version history.
+**Predicting river-water chemistry in South Africa using satellite imagery and open environmental data.**
 
-## Project Structure
+The challenge was to predict three measurements at a given river location and date:
 
-```
+| Measurement | In plain English |
+|---|---|
+| **Total Alkalinity** | How well the water can neutralize acids. |
+| **Electrical Conductance** | How easily the water carries electricity, which reflects its dissolved ions. |
+| **Dissolved Reactive Phosphorus** | A readily available form of phosphorus that can contribute to algal growth. |
+
+These are the **outputs to predict**, not three input features. Training inputs include location, date, and features extracted from open datasets. This is a regression project, not a drinking-water safety classifier.
+
+## What makes this project interesting
+
+The work grew from an imagery-based baseline into an environmental modeling pipeline: Landsat bands and temperature, rainfall and drought history, soil properties, terrain, and surrounding land cover. Later experiments also explored geology and predictions anchored to measurements at other stations.
+
+The real challenge was **generalizing to new places**. The local data contains **9,319 labeled samples from 162 stations (2011–2015)** and **200 prediction rows at 24 different locations**. Those prediction locations are approximately **82–282 km from the nearest training station**. A model that recognizes familiar stations is not necessarily useful in the new region.
+
+**Read the [plain-English project summary](docs/PROJECT_SUMMARY.md) for the full story.**
+
+## Current status — an honest research baseline
+
+- **Saved reference:** [`best_submission/submission_v9.csv`](best_submission/submission_v9.csv), chosen by the author as the restart baseline. It has 200 complete prediction rows in the template's order.
+- **V9 method:** combine environmental ML with distance-weighted neighboring-station estimates and optional residual correction.
+- **Important limitation:** V9's neighbor features were built using the full training set before cross-validation. Excluding a station's own measurements does **not** exclude the held-out region's measurements. Its reported CV gains are not leakage-free evidence of cross-region accuracy.
+- **Newer is not automatically better:** V10's proper regional holdouts were negative; V11's saved results were also negative. V12 has code but no saved results or submission in this checkout.
+- **No independently verified V9 leaderboard score is stored here.** “Best” means author-designated, not a proven ranking across all versions.
+
+See the [review and cleanup report](docs/REVIEW.md) for results, data-quality issues, and the remaining work. The original [experiment log](experiment_logs/experiment_log.md) is preserved as history, with a close-out correction appended.
+
+## Repository layout
+
+```text
 EY_Challenge/
-├── ey_challenge_notebooks/  # Original EY-provided files (DON'T MODIFY)
-├── data/
-│   ├── raw/README.md        # Pointer only (originals live in ey_challenge_notebooks/)
-│   └── extracted/           # Generated features, LOCAL ONLY (*.csv git-ignored, *_feature_columns.txt tracked)
-├── scripts/                 # Full pipeline, kept as history (01 → 24, see table below)
-├── notebooks/               # Empty placeholder for future work (work currently in scripts/)
-├── submissions/             # One canonical CSV per version (timestamped dupes removed after hash check)
-├── best_submission/         # Author-designated best: submission_v9.csv
-├── experiment_logs/         # Append-only experiment log + per-version results
+├── scripts/                  # Data checks, extraction, V8 → V9 feature building, V9 model
+│   └── archive/              # 20 earlier/alternative experiments; not needed for V9
+├── ey_challenge_notebooks/   # Original EY notebooks + locally supplied CSVs; unchanged
+├── data/extracted/           # Local extraction/feature caches; CSVs are git-ignored
+├── best_submission/          # One tracked V9 reference; never auto-overwritten
+├── submissions/              # Earlier version outputs; regenerated V9 stays local
+├── experiment_logs/          # Historical notes and recorded results
+├── docs/                     # Plain-English summary, reproduction guide, review
+├── tests/                    # Offline integrity tests
 ├── requirements.txt
-├── setup.bat                # Windows one-click setup (creates venv/, installs requirements)
-└── README.md
+└── setup.bat
 ```
 
-## Quick Start (Windows)
+Unique experiments were **archived, not destroyed**. Only the hash-verified extra V9 submission copy and unused placeholder/pointer files were deleted. See the [archive index](scripts/archive/README.md).
+
+## Quick checks — no ML installation needed
+
+From the project folder:
 
 ```bat
-setup.bat                  :: creates venv\ and installs requirements.txt
-venv\Scripts\activate      :: future sessions
+python scripts\validate_submission.py
+python -m unittest discover -s tests -v
+```
+
+The validator checks columns, row count, location/date ordering, and finite non-negative predictions. It does **not** measure accuracy.
+
+## Run the historical V9 workflow
+
+For a fresh installation of the pinned dependencies, use **Python 3.11 or 3.12**:
+
+```bat
+setup.bat
+venv\Scripts\activate
 python scripts\01_analyze_data.py
 ```
 
-Regenerate the current-best feature set locally (data stays local, not pushed):
+If the local V9 feature caches already exist:
 
 ```bat
+python scripts\21_model_v9.py
+python scripts\validate_submission.py submissions\submission_v9.csv
+```
+
+If rebuilding from existing extraction caches:
+
+```bat
+python scripts\18_feature_engineering_v8.py
 python scripts\20_feature_engineering_v9.py
 python scripts\21_model_v9.py
 ```
 
-## Pipeline (scripts/ kept as full history)
+**V8 is the prerequisite for V9**; V4/V5/V6 feature tables are not required. The model writes `submissions/submission_v9.csv`, not the protected reference in `best_submission/`.
 
-| Stage | Scripts |
-|---|---|
-| Analysis | `01_analyze_data.py`, `check_landsat_quality.py` |
-| Extraction | `03_extract_features.py`, `07_extract_slope.py`, `15_extract_landcover.py`, `15_extract_worldcover.py`, `16_extract_geology.py`, `extract_landsat_full.py`, `extract_sentinel2.py` |
-| Feature engineering | `08_feature_engineering_v4.py`, `10_feature_engineering_v5.py`, `12_feature_engineering_v6.py`, `18_feature_engineering_v8.py`, `20_feature_engineering_v9.py` |
-| Models | `02_model_v0.py`, `02_model_v0.1.py`, `04_model_v1.py`, `05_model_v2.py`, `06_model_v3.py`, `09_model_v4.py`, `11_model_v5.py`, `13_model_v6.py`, `14_model_v7_ec.py`, `17_model_v7b_ec.py`, `19_model_v8.py`, `21_model_v9.py`, `22_model_v10.py`, `23_model_v11.py`, `24_model_v12_image_only.py`, `06_ensemble_v1v2.py` |
+A fresh clone does **not** contain the training CSV or generated feature CSVs. Obtain the EY-provided files through the challenge's authorized distribution, then follow the [reproduction guide](docs/REPRODUCING.md) for the complete extraction order. Live extraction can take hours and depends on external APIs.
 
-Notes: `02_model_v0` vs `02_model_v0.1`, `06_model_v3` vs `06_ensemble_v1v2`, and `15_landcover` vs `15_worldcover` are intentional kept variants. Best submission is **v9** (`best_submission/submission_v9.csv`); v10/v11 in `submissions/` are newer attempts — compare `experiment_logs/` before promoting.
+## To finish the modeling side properly
 
-## Data note (why repo looks small)
+1. Rebuild target-derived neighbor features **inside each spatial training fold**; fit preprocessing there too.
+2. Correct geology parsing and SoilGrids units before claiming those features worked.
+3. Compare simple mean, environmental-only, and interpolation baselines using the same untouched regional holdouts.
+4. Record the final submission, actual leaderboard result if available, and exact package versions together.
 
-`data/extracted/*.csv` (~125MB) and vendor CSVs are **git-ignored** (see `.gitignore`) to keep the public repo slim and under GitHub's 100MB-per-file block. Column lists (`*_feature_columns.txt`), code, submissions, and logs ARE tracked. Your local CSVs are untouched — this only affects what gets pushed.
+The strongest takeaway is the end-to-end geospatial research and the discovery that **spatial evaluation and data quality matter more than adding another model**.
 
-## No license (yet)
-
-Public with no `LICENSE` = all rights reserved (visible, not reusable). Adding MIT later is free and takes a minute when you want reuse.
+No project license has been added. Original EY material and external datasets retain their own terms.

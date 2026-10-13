@@ -3,14 +3,13 @@ EY Water Quality Challenge - Data Analysis Script
 Run this first to understand what we have and what we need.
 """
 import pandas as pd
-import numpy as np
 import os
 
 # ============================================
 # PATHS
 # ============================================
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-RAW_DIR = os.path.join(BASE_DIR, '..', 'Jupyter Notebook Package')
+RAW_DIR = os.path.join(BASE_DIR, '..', 'ey_challenge_notebooks')
 
 # ============================================
 # LOAD ALL DATA

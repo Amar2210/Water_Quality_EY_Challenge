@@ -39,7 +39,7 @@ except ImportError:
     print("Install with: pip install planetary_computer pystac_client")
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATA_DIR = os.path.join(BASE_DIR, '..', 'Jupyter Notebook Package')
+DATA_DIR = os.path.join(BASE_DIR, '..', 'ey_challenge_notebooks')
 OUTPUT_DIR = os.path.join(BASE_DIR, '..', 'data', 'extracted')
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
@@ -507,6 +507,6 @@ if __name__ == "__main__":
     print(f"""
 NEXT STEPS:
   1. Check the extracted CSV files in data/extracted/
-  2. Run the V1 model script that uses these new features
-  3. Expected: significant R² boost from precipitation, elevation, soil
+  2. Complete the Landsat, slope, land cover, and geology extraction stages
+  3. Run scripts/18_feature_engineering_v8.py, then scripts/20_feature_engineering_v9.py
 """)

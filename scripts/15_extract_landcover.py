@@ -75,7 +75,7 @@ except ImportError as e:
 # CONFIG
 # ============================================================
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATA_DIR = os.path.join(BASE_DIR, '..', 'Jupyter Notebook Package')
+DATA_DIR = os.path.join(BASE_DIR, '..', 'ey_challenge_notebooks')
 OUTPUT_DIR = os.path.join(BASE_DIR, '..', 'data', 'extracted')
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 

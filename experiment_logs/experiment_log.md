@@ -1081,3 +1081,38 @@ All features StandardScaled before KD-tree construction (so soil_clay % and elev
 ---
 
 *Last updated: 2026-02-25 (V11 pre-results, code written, awaiting execution)*
+
+---
+
+## Repository Close-Out Review — Corrections and Current Status
+
+This section is appended to preserve the historical record above. The current source/data review is documented in `docs/REVIEW.md`; the plain-English story is in `docs/PROJECT_SUMMARY.md`.
+
+### Evaluation corrections
+
+- **V9's reported spatial CV is not leakage-free.** Its neighbor target features and IDW baselines are built from the entire training set before GroupKFold. Excluding the query station does not exclude other stations in the held-out region. Splitting precomputed predictions into regional score groups does not fix this. The positive V9 values above must not be presented as confirmed cross-region generalization.
+- V9's full-training-library construction does not imply use of hidden prediction-set targets. Final inference can use the available training labels; internal CV must instead rebuild the library from each fold's training stations.
+- The pure KNN pooled R² and fold-averaged R² above measure different things. Correlation is also not a percentage of explained variance.
+- **V10 results exist:** station-holdout R² = +0.3315 / +0.3797 / +0.1961; regional R² = −0.5440 / −0.3023 / −0.6209 for TA / EC / DRP. See `v10_results_20260223_224444.csv`.
+- **V11 results are no longer pending:** recorded final regional R² = −0.3524 / −0.2175 / −0.3497. See `v11_results_20260225_224102.csv`. Its final submission-generation section also has a stale target-vector bug and feature-tree scaling inconsistencies; the CSV should not be promoted without repairs.
+- V12 has source code but no saved result log or submission in this checkout.
+- The saved V9 CSV is author-designated. No independently verified V9 leaderboard score is stored here. Assertions about competitors' methods remain hypotheses, not evidence.
+
+### Data corrections
+
+- The local prediction rows are 81.73–281.54 km from their nearest training station. Earlier explanations relying on nearby prediction stations were speculative.
+- All 186 local geology categories are `unknown`; lithology flags are zero and impact scores are default constants. Age fields and soil proxies vary, but successful bedrock classification was not demonstrated.
+- Local soil pH values are 55–83 and require provider-unit conversion before physical thresholds. The resulting geology pH proxy class is missing everywhere.
+- Local Sentinel-2 spectral columns are entirely missing, rather than the 97.5% historical figure above. Check date/catalog coverage before re-extraction.
+- Land-cover code targets ESA CCI 2013 but can use a WorldCover 2021 fallback; source/year is not recorded in the CSV, so exact provenance needs confirmation.
+
+### Repository cleanup
+
+- Twenty earlier/alternative scripts now live under `scripts/archive/`; historical `scripts/<filename>` references should be mapped there where applicable. Their unique research was preserved.
+- The active path is extraction caches → `18_feature_engineering_v8.py` → `20_feature_engineering_v9.py` → `21_model_v9.py`.
+- Old `Jupyter Notebook Package` paths and personal absolute paths were repaired. Original EY notebooks and local data caches were preserved.
+- The byte-identical extra V9 submission and unused placeholder/pointer files were removed. The saved `best_submission/submission_v9.csv` remains unchanged.
+- V9 now writes one generated submission, warns about the evaluation limitation, and does not auto-promote the reference.
+- A submission validator and offline integrity tests were added. This cleanup does not constitute a new modeling experiment or a new leaderboard result.
+
+Next modeling priority: repair data quality and use fold-local target features/preprocessing with untouched regional holdouts before claiming accuracy improvements.
